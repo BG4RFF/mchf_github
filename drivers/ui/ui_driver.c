@@ -5887,7 +5887,7 @@ static void UiDriverHandleSWRMeter(void)
 {
 	ushort	val_p,val_s = 0;
 	float	fwd_calc, scale_calc;
-	//float 	rho,swr;
+	float 	rho,swr;
 
 	// Only in TX mode
 	if(ts.txrx_mode != TRX_MODE_TX)
@@ -5907,8 +5907,8 @@ static void UiDriverHandleSWRMeter(void)
 		val_s = ADC_GetConversionValue(ADC3);	// return
 
 		// Add to accumulator
-		swrm.pwr_aver = swrm.pwr_aver + val_p;
-		swrm.swr_aver = swrm.swr_aver + val_s;
+		swrm.pwr_aver += val_p;
+		swrm.swr_aver += val_s;
 
 		swrm.p_curr++;
 
