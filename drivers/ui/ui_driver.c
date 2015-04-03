@@ -5885,7 +5885,7 @@ static void UiDriverHandleSmeter(void)
 //*----------------------------------------------------------------------------
 static void UiDriverHandleSWRMeter(void)
 {
-	ushort	val_p,val_s = 0;
+	ushort	val_p,val_s,val_o = 0;
 	float	fwd_calc, scale_calc, ref_calc;
 	float 	rho,swr;
 
@@ -5936,6 +5936,7 @@ static void UiDriverHandleSWRMeter(void)
 	// Get average
 	val_p  = swrm.pwr_aver/SWR_SAMPLES_CNT;
 	val_s  = swrm.swr_aver/SWR_SAMPLES_CNT;
+	val_o  = val_p - val_s; // this will be used for outgoing power
 
 	//printf("aver power %d, aver ret %d\n\r", val_p,val_s);
 
@@ -5952,47 +5953,47 @@ static void UiDriverHandleSWRMeter(void)
 	//UiDriverUpdateTopMeterA((uchar)(val_p/190),0);
 
 	// Show 1W
-	if((val_p > POWER_1W_MIN) && (val_p < POWER_1W_MAX))
+	if((val_o > POWER_1W_MIN) && (val_p < POWER_1W_MAX))
 		UiDriverUpdateTopMeterA(3,0);
 
 	// Show 2W
-	if((val_p > POWER_2W_MIN) && (val_p < POWER_2W_MAX))
+	if((val_o > POWER_2W_MIN) && (val_p < POWER_2W_MAX))
 		UiDriverUpdateTopMeterA(6,0);
 
 	// Show 3W
-	if((val_p > POWER_3W_MIN) && (val_p < POWER_3W_MAX))
+	if((val_o > POWER_3W_MIN) && (val_p < POWER_3W_MAX))
 		UiDriverUpdateTopMeterA(9,0);
 
 	// Show 4W
-	if((val_p > POWER_4W_MIN) && (val_p < POWER_4W_MAX))
+	if((val_o > POWER_4W_MIN) && (val_p < POWER_4W_MAX))
 		UiDriverUpdateTopMeterA(12,0);
 
 	// Show 5W
-	if((val_p > POWER_5W_MIN) && (val_p < POWER_5W_MAX))
+	if((val_o > POWER_5W_MIN) && (val_p < POWER_5W_MAX))
 		UiDriverUpdateTopMeterA(15,0);
 
 	// Show 6W
-	if((val_p > POWER_6W_MIN) && (val_p < POWER_6W_MAX))
+	if((val_o > POWER_6W_MIN) && (val_p < POWER_6W_MAX))
 		UiDriverUpdateTopMeterA(18,0);
 
 	// Show 7W
-	if((val_p > POWER_7W_MIN) && (val_p < POWER_7W_MAX))
+	if((val_o > POWER_7W_MIN) && (val_p < POWER_7W_MAX))
 		UiDriverUpdateTopMeterA(21,0);
 
 	// Show 8W
-	if((val_p > POWER_8W_MIN) && (val_p < POWER_8W_MAX))
+	if((val_o > POWER_8W_MIN) && (val_p < POWER_8W_MAX))
 		UiDriverUpdateTopMeterA(24,0);
 
 	// Show 9W
-	if((val_p > POWER_9W_MIN) && (val_p < POWER_9W_MAX))
+	if((val_o > POWER_9W_MIN) && (val_p < POWER_9W_MAX))
 		UiDriverUpdateTopMeterA(27,0);
 
 	// Show 10W
-	if((val_p > POWER_10W_MIN) && (val_p < POWER_10W_MAX))
+	if((val_o > POWER_10W_MIN) && (val_p < POWER_10W_MAX))
 		UiDriverUpdateTopMeterA(30,0);
 
 	// Show overload
-	if(val_p > POWER_10W_MAX)
+	if(val_o > POWER_10W_MAX)
 		UiDriverUpdateTopMeterA(34,0);
 
 	if(ts.tx_meter_mode == METER_SWR)	{

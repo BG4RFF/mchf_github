@@ -399,11 +399,11 @@
       </source>
       <source file="..\..\..\usb\otg\inc\usb_otg.h" lastModified="14c7f111f83">
       </source>
+      <source file="..\..\..\drivers\audio\filters\fir_1_8k.h" lastModified="14c7f111d03">
+      </source>
       <source file="..\..\..\misc\v_eprom\eeprom.c" lastModified="14c7f111f77">
          <include file="..\..\..\hardware\mchf_board.h"/>
          <include file="..\..\..\misc\v_eprom\eeprom.h"/>
-      </source>
-      <source file="..\..\..\drivers\audio\filters\fir_1_8k.h" lastModified="14c7f111d03">
       </source>
       <source file="..\..\..\usb\usbh\class\HID\src\usbh_hid_keybd.c" lastModified="14c7f111f9d">
          <include file="..\..\..\usb\usbh\class\HID\inc\usbh_hid_keybd.h"/>
@@ -561,12 +561,12 @@
       <source file="..\..\..\cmsis_lib\include\misc.h" lastModified="14c7f111cd0">
          <include file="..\..\..\cmsis_boot\stm32f4xx.h"/>
       </source>
+      <source file="..\..\..\cmsis_lib\include\stm32f4xx_syscfg.h" lastModified="14c7f111cde">
+         <include file="..\..\..\cmsis_boot\stm32f4xx.h"/>
+      </source>
       <source file="..\..\..\cmsis_lib\source\stm32f4xx_tim.c" lastModified="14c7f111cf1">
          <include file="..\..\..\cmsis_lib\include\stm32f4xx_tim.h"/>
          <include file="..\..\..\cmsis_lib\include\stm32f4xx_rcc.h"/>
-      </source>
-      <source file="..\..\..\cmsis_lib\include\stm32f4xx_syscfg.h" lastModified="14c7f111cde">
-         <include file="..\..\..\cmsis_boot\stm32f4xx.h"/>
       </source>
       <source file="..\..\..\drivers\ui\ui_menu.h" lastModified="14c7f111d43">
       </source>
@@ -597,10 +597,6 @@
       </source>
       <source file="..\..\..\cmsis\core_cmFunc.h" lastModified="14c7f1120aa">
       </source>
-      <source file="..\..\..\usb\usbd\class\audio\src\usbd_audio_core.c" lastModified="14c7f111f8e">
-         <include file="..\..\..\usb\usbd\class\audio\inc\usbd_audio_core.h"/>
-         <include file="..\..\..\usb\usbd\class\audio\inc\usbd_audio_out_if.h"/>
-      </source>
       <source file="..\..\..\hardware\mchf_types.h" lastModified="14c7f111f18">
       </source>
       <source file="..\..\..\usb\usbd\core\src\usbd_core.c" lastModified="14c7f111f96">
@@ -610,14 +606,18 @@
          <include file="..\..\..\usb\otg\inc\usb_dcd_int.h"/>
          <include file="..\..\..\drivers\cat\usb\usbd_bsp.h"/>
       </source>
-      <source file="..\..\..\cmsis_lib\source\stm32f4xx_rtc.c" lastModified="14c7f111cee">
-         <include file="..\..\..\cmsis_lib\include\stm32f4xx_rtc.h"/>
-         <include file="..\..\..\cmsis_lib\include\stm32f4xx_rcc.h"/>
+      <source file="..\..\..\usb\usbd\class\audio\src\usbd_audio_core.c" lastModified="14c7f111f8e">
+         <include file="..\..\..\usb\usbd\class\audio\inc\usbd_audio_core.h"/>
+         <include file="..\..\..\usb\usbd\class\audio\inc\usbd_audio_out_if.h"/>
       </source>
       <source file="..\..\..\drivers\audio\softdds\softdds.c" lastModified="14c7f112104">
          <include file="..\..\..\hardware\mchf_board.h"/>
          <include file="..\..\..\drivers\audio\softdds\dds_table.h"/>
          <include file="..\..\..\drivers\audio\softdds\softdds.h"/>
+      </source>
+      <source file="..\..\..\cmsis_lib\source\stm32f4xx_rtc.c" lastModified="14c7f111cee">
+         <include file="..\..\..\cmsis_lib\include\stm32f4xx_rtc.h"/>
+         <include file="..\..\..\cmsis_lib\include\stm32f4xx_rcc.h"/>
       </source>
       <source file="..\..\..\drivers\audio\filters\iir_1_8k.h" lastModified="14c7f111d0d">
       </source>
