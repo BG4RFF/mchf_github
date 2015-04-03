@@ -5886,7 +5886,7 @@ static void UiDriverHandleSmeter(void)
 static void UiDriverHandleSWRMeter(void)
 {
 	ushort	val_p,val_s = 0;
-	float	fwd_calc, scale_calc;
+	float	fwd_calc, scale_calc, ref_calc;
 	float 	rho,swr;
 
 	// Only in TX mode
@@ -5926,6 +5926,10 @@ static void UiDriverHandleSWRMeter(void)
 		scale_calc /= 100;					// divide by 100
 		fwd_calc *= scale_calc;				// apply calibration
 		swrm.pwr_aver = (ushort)fwd_calc;
+
+		ref_calc = (float)swrm.swr_aver;	//apply the same calibration factor to reflected power
+		ref_calc *= scale_calc;				//there should be a reflected power meter shown in the future
+		swrm.swr_aver = (ushort)ref_calc;
 	}
 	//
 
@@ -5998,14 +6002,21 @@ static void UiDriverHandleSWRMeter(void)
 		// From http://ac6v.com/swrmeter.html
 		// not working, to fix !!!
 		//
-		//rho 	= (float)sqrt((val_s/val_p));
-		//swr 	= (1 + rho)/(1 - rho);
-		//swr 	= (swr * 30);
-		//val_s	 = ((ushort)swr);
+		rho = (float)sqrt((val_s/val_p));
+		swr = (1 + rho)/(1 - rho);
+		swr *= 3;
+		val_s = ((ushort)swr);
 		//printf("swr %i\n\r", val_s);
 
 		// Display SWR
-		//UiDriverUpdateBtmMeter((uchar)(val_s / 10), 0);
+		UiDriverUpdateBtmMeter((uchar)val_s, 0);
+
+		// used for debugging
+				char txt[32];
+				sprintf(txt, "  %d   ", val_s);
+				UiLcdHy28_PrintText    ((POS_RIT_IND_X + 1), (POS_RIT_IND_Y + 20),txt,White,Grid,0);
+
+
 	}
 	else if(ts.tx_meter_mode == METER_ALC)	{
 		scale_calc = ads.alc_val;		// get TX ALC value

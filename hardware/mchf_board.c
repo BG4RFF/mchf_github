@@ -371,7 +371,7 @@ static void mchf_board_adc1_init(void)
 	ADC_CommonInitTypeDef 	ADC_CommonInitStructure;
 	GPIO_InitTypeDef 		GPIO_InitStructure;
 
-	// Enable ADC3 clock
+	// Enable ADC1 clock
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
 
 	// Configure ADC Channel 6 as analog input
@@ -420,7 +420,7 @@ static void mchf_board_adc2_init(void)
 	ADC_CommonInitTypeDef 	ADC_CommonInitStructure;
 	GPIO_InitTypeDef 		GPIO_InitStructure;
 
-	// Enable ADC3 clock
+	// Enable ADC2 clock
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC2, ENABLE);
 
 	// Configure ADC Channel 6 as analog input
