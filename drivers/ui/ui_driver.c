@@ -2434,8 +2434,8 @@ static void UiDriverUpdateTopMeterA(uchar val,uchar old)
 
 
 	// Do not waste time redrawing if outside of the range or if the meter has not changed
-	if((val > 34) || (val == old))
-		return;
+	//if((val > 34) || (val == old))
+	//	return;
 
 	// Indicator height
 	v_s = 3;
@@ -5885,9 +5885,9 @@ static void UiDriverHandleSmeter(void)
 //*----------------------------------------------------------------------------
 static void UiDriverHandleSWRMeter(void)
 {
-	ushort	val_p,val_s,val_o = 0;
-	float	fwd_calc, scale_calc, ref_calc;
-	float 	rho,swr;
+	ushort	val_p,val_s,val_o,val_swr = 0;
+	float_t	fwd_calc, scale_calc, ref_calc = 0;
+	float_t 	swr = 0;
 
 	// Only in TX mode
 	if(ts.txrx_mode != TRX_MODE_TX)
@@ -5936,7 +5936,7 @@ static void UiDriverHandleSWRMeter(void)
 	// Get average
 	val_p  = swrm.pwr_aver/SWR_SAMPLES_CNT;
 	val_s  = swrm.swr_aver/SWR_SAMPLES_CNT;
-	val_o  = val_p - val_s; // this will be used for outgoing power
+	 // this will be used for outgoing power
 
 	//printf("aver power %d, aver ret %d\n\r", val_p,val_s);
 
@@ -5950,8 +5950,18 @@ static void UiDriverHandleSWRMeter(void)
 		//ts.tx_power_factor	= 0.0;
 	}
 
-	//UiDriverUpdateTopMeterA((uchar)(val_p/190),0);
+	if (val_s > val_p)
+	{
+		val_o = 0;
+	}
 
+	else
+	{
+		val_o  = (val_p - val_s);
+	}
+
+	UiDriverUpdateTopMeterA((uchar)(val_o/120),0);
+/*
 	// Show 1W
 	if((val_o > POWER_1W_MIN) && (val_p < POWER_1W_MAX))
 		UiDriverUpdateTopMeterA(3,0);
@@ -5995,29 +6005,60 @@ static void UiDriverHandleSWRMeter(void)
 	// Show overload
 	if(val_o > POWER_10W_MAX)
 		UiDriverUpdateTopMeterA(34,0);
-
+*/
 	if(ts.tx_meter_mode == METER_SWR)	{
 		// Just test
 		//UiDriverUpdateBtmMeter((uchar)(val_s / 250), 0);
 
 		// From http://ac6v.com/swrmeter.html
-		// not working, to fix !!!
+		// Fixed by KC8CDQ
 		//
-		rho = (float)sqrt((val_s/val_p));
-		swr = (1 + rho)/(1 - rho);
-		swr *= 3;
-		val_s = ((ushort)swr);
+
+		if (val_s < 300)
+		{
+			val_s = 300;
+		}
+
+		if (val_p < 300)
+		{
+			val_p = 300;
+		}
+
+		val_s -= 300;	//zero out the meters
+		val_p -= 300;
+
+
+		if (val_p <= 100)	// Do not display swr for low signal levels
+		{
+			swr = 0;
+		}
+
+		else {
+			float_t fraction = val_s/(float_t)val_p;
+			float_t rho = sqrt(fraction);
+			swr = (1 + rho)/(1 - rho);
+		}
+
+		swr *= 100;
+		val_swr = (ushort)swr;
 		//printf("swr %i\n\r", val_s);
 
 		// Display SWR
-		UiDriverUpdateBtmMeter((uchar)val_s, 0);
+
+		UiDriverUpdateBtmMeter((uchar)(val_swr/60), 15);
 
 		// used for debugging
+		/*
 				char txt[32];
-				sprintf(txt, "  %d   ", val_s);
+				sprintf(txt, "p= %d      ", val_p);
 				UiLcdHy28_PrintText    ((POS_RIT_IND_X + 1), (POS_RIT_IND_Y + 20),txt,White,Grid,0);
 
+				sprintf(txt, "s= %d      ", val_s);
+				UiLcdHy28_PrintText    ((POS_RIT_IND_X + 1), (POS_RIT_IND_Y + 30),txt,White,Grid,0);
 
+				sprintf(txt, "swr= %d      ", val_swr);
+				UiLcdHy28_PrintText    ((POS_RIT_IND_X + 1), (POS_RIT_IND_Y + 40),txt,White,Grid,0);
+		*/
 	}
 	else if(ts.tx_meter_mode == METER_ALC)	{
 		scale_calc = ads.alc_val;		// get TX ALC value
