@@ -53,7 +53,7 @@
 </editor>
 <editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="ui_driver.c" partName="ui_driver.c" path="C:/Users/ionut/Documents/GitHub/mchf_github/drivers/ui/ui_driver.c" title="ui_driver.c" tooltip="C:/Users/ionut/Documents/GitHub/mchf_github/drivers/ui/ui_driver.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/firmware_Target/drivers/ui/ui_driver.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="198742" selectionTopPixel="89760"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="199527" selectionTopPixel="90810"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f4xx_adc.c" partName="stm32f4xx_adc.c" path="C:/Users/moljoh/Documents/GitHub/mchf_github/cmsis_lib/source/stm32f4xx_adc.c" title="stm32f4xx_adc.c" tooltip="C:/Users/moljoh/Documents/GitHub/mchf_github/cmsis_lib/source/stm32f4xx_adc.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/firmware_Target/cmsis_lib/source/stm32f4xx_adc.c"/>
@@ -208,15 +208,6 @@
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/firmware_Target/drivers/ui/ui_driver.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/firmware_Target/main.c"/>
 </editors>
-<item historyLabel="audio_driver.h" index="0">
-<position info="not_deleted" x="2386" y="7"/>
-</item>
-<item historyLabel="audio_driver.c" index="1">
-<position info="not_deleted" x="62271" y="0"/>
-</item>
-<item historyLabel="audio_driver.h" index="0">
-<position/>
-</item>
 <item historyLabel="audio_driver.c" index="1">
 <position info="not_deleted" x="71340" y="3"/>
 </item>
@@ -349,8 +340,23 @@
 <item historyLabel="main.c" index="8">
 <position info="not_deleted" x="24443" y="0"/>
 </item>
-<item active="true" historyLabel="ui_driver.c" index="7">
+<item historyLabel="ui_driver.c" index="7">
 <position info="not_deleted" x="198440" y="9"/>
+</item>
+<item historyLabel="ui_driver.c" index="7">
+<position info="not_deleted" x="197326" y="0"/>
+</item>
+<item historyLabel="ui_driver.c" index="7">
+<position info="not_deleted" x="199177" y="0"/>
+</item>
+<item historyLabel="ui_driver.c" index="7">
+<position info="not_deleted" x="198730" y="0"/>
+</item>
+<item historyLabel="ui_driver.c" index="7">
+<position info="not_deleted" x="198908" y="0"/>
+</item>
+<item active="true" historyLabel="ui_driver.c" index="7">
+<position info="not_deleted" x="198705" y="0"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
