@@ -5948,6 +5948,8 @@ static void UiDriverHandleSWRMeter(void)
 
 		// Disable tx - not used for now
 		//ts.tx_power_factor	= 0.0;
+
+		ts.power_level = PA_LEVEL_0_5W;
 	}
 
 	if (val_s > val_p)
@@ -6010,6 +6012,17 @@ static void UiDriverHandleSWRMeter(void)
 		// Just test
 		//UiDriverUpdateBtmMeter((uchar)(val_s / 250), 0);
 
+
+		//for debugging
+		char txt[32];
+		sprintf(txt, "p= %d      ", val_p);
+		UiLcdHy28_PrintText    ((POS_RIT_IND_X + 1), (POS_RIT_IND_Y + 20),txt,White,Grid,0);
+
+		sprintf(txt, "s= %d      ", val_s);
+		UiLcdHy28_PrintText    ((POS_RIT_IND_X + 1), (POS_RIT_IND_Y + 30),txt,White,Grid,0);
+
+
+
 		// From http://ac6v.com/swrmeter.html
 		// Fixed by KC8CDQ
 		//
@@ -6034,9 +6047,10 @@ static void UiDriverHandleSWRMeter(void)
 		}
 
 		else {
-			float_t fraction = val_s/(float_t)val_p;
-			float_t rho = sqrt(fraction);
-			swr = (1 + rho)/(1 - rho);
+			//float_t fraction = val_s/(float_t)val_p;
+			//float_t rho = sqrt(fraction);
+			//swr = (1 + rho)/(1 - rho);
+			swr = (float_t(val_p) + float_t(val_s))/(float_t(val_p) - float_t(val_s));
 		}
 
 		swr *= 100;
@@ -6048,17 +6062,11 @@ static void UiDriverHandleSWRMeter(void)
 		UiDriverUpdateBtmMeter((uchar)(val_swr/60), 15);
 
 		// used for debugging
-		/*
-				char txt[32];
-				sprintf(txt, "p= %d      ", val_p);
-				UiLcdHy28_PrintText    ((POS_RIT_IND_X + 1), (POS_RIT_IND_Y + 20),txt,White,Grid,0);
 
-				sprintf(txt, "s= %d      ", val_s);
-				UiLcdHy28_PrintText    ((POS_RIT_IND_X + 1), (POS_RIT_IND_Y + 30),txt,White,Grid,0);
 
 				sprintf(txt, "swr= %d      ", val_swr);
 				UiLcdHy28_PrintText    ((POS_RIT_IND_X + 1), (POS_RIT_IND_Y + 40),txt,White,Grid,0);
-		*/
+
 	}
 	else if(ts.tx_meter_mode == METER_ALC)	{
 		scale_calc = ads.alc_val;		// get TX ALC value
