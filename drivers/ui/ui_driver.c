@@ -1393,9 +1393,34 @@ static void UiDriverProcessFunctionKeyClick(ulong id)
 			ts.menu_var_changed = 1;
 		}
 		else	{	// Not in MENU mode - select the meter mode
+
+			if(ts.prot) {
+				ts.prot = 0;
+
+				ts.power_level = ts.power_level_old;
+
+				UiDriverChangePowerLevel();
+					if(ts.tune)		// recalculate sidetone gain only if transmitting/tune mode
+							Codec_SidetoneSetgain();
+							//
+					if(ts.menu_mode)	// are we in menu mode?
+							UiDriverUpdateMenu(0);	// yes, update display when we change power setting
+
+				//UiDriverDeleteSMeter();
+				//UiDriverCreateSMeter();	// redraw meter
+				UiLcdHy28_PrintText(((POS_SM_IND_X + 18) + 140),(POS_SM_IND_Y + 59),"     ",Black,Black,4);
+
+				UiLcdHy28_PrintText(POS_BOTTOM_BAR_F2_X,POS_BOTTOM_BAR_F2_Y," METER",White,Black,0);
+
+			}
+			else  {
+
 			ts.tx_meter_mode++;
 			if(ts.tx_meter_mode > METER_MAX)
 				ts.tx_meter_mode = 0;
+
+
+
 			//
 			UiLcdHy28_PrintText(POS_BOTTOM_BAR_F2_X,POS_BOTTOM_BAR_F2_Y," METER",White,Black,0);
 			//
@@ -1417,6 +1442,8 @@ static void UiDriverProcessFunctionKeyClick(ulong id)
 			//
 			UiDriverDeleteSMeter();
 			UiDriverCreateSMeter();	// redraw meter
+		}
+
 		}
 	}
 
@@ -2220,14 +2247,14 @@ static void UiDriverCreateSMeter(void)
 		UiLcdHy28_PrintText(((POS_SM_IND_X + 18) - 12),(POS_SM_IND_Y + 59),"SWR",Red2,Black,4);
 
 		// Draw bottom line for SWR indicator
-		UiLcdHy28_DrawStraightLine((POS_SM_IND_X + 18),(POS_SM_IND_Y + 55), 62,LCD_DIR_HORIZONTAL,White);
-		UiLcdHy28_DrawStraightLine((POS_SM_IND_X + 18),(POS_SM_IND_Y + 56), 62,LCD_DIR_HORIZONTAL,White);
-		UiLcdHy28_DrawStraightLine((POS_SM_IND_X + 83),(POS_SM_IND_Y + 55),105,LCD_DIR_HORIZONTAL,Red);
-		UiLcdHy28_DrawStraightLine((POS_SM_IND_X + 83),(POS_SM_IND_Y + 56),105,LCD_DIR_HORIZONTAL,Red);
+		UiLcdHy28_DrawStraightLine((POS_SM_IND_X + 18),(POS_SM_IND_Y + 55), 83,LCD_DIR_HORIZONTAL,White);
+		UiLcdHy28_DrawStraightLine((POS_SM_IND_X + 18),(POS_SM_IND_Y + 56), 83,LCD_DIR_HORIZONTAL,White);
+		UiLcdHy28_DrawStraightLine((POS_SM_IND_X + 104),(POS_SM_IND_Y + 55),84,LCD_DIR_HORIZONTAL,Red);
+		UiLcdHy28_DrawStraightLine((POS_SM_IND_X + 104),(POS_SM_IND_Y + 56),84,LCD_DIR_HORIZONTAL,Red);
 		col = White;
 
 		// Draw S markers on middle white line
-		for(i = 0; i < 12; i++)
+		for(i = 0; i < 6; i++)
 		{
 			if(i > 6) col = Red;
 
@@ -2251,6 +2278,14 @@ static void UiDriverCreateSMeter(void)
 				}
 			}
 		}
+
+		UiLcdHy28_DrawStraightLine(((POS_SM_IND_X + 18) + 80),((POS_SM_IND_Y + 55) - 2),2,LCD_DIR_VERTICAL,col);
+		UiLcdHy28_DrawStraightLine(((POS_SM_IND_X + 19) + 80),((POS_SM_IND_Y + 55) - 2),2,LCD_DIR_VERTICAL,col);
+
+		num[0] = 3 + 0x30;
+		num[1] = 0;
+		UiLcdHy28_PrintText(((POS_SM_IND_X + 18) - 3 + 80),(POS_SM_IND_Y + 59),num,White,Black,4);
+
 	}
 	else if(ts.tx_meter_mode == METER_ALC)	{
 		UiLcdHy28_PrintText(((POS_SM_IND_X + 18) - 12),(POS_SM_IND_Y + 59),"ALC",Yellow,Black,4);
@@ -5893,6 +5928,9 @@ static void UiDriverHandleSWRMeter(void)
 	if(ts.txrx_mode != TRX_MODE_TX)
 		return;
 
+	//if (ts.prot)
+	//	return;
+
 	swrm.skip++;
 	if(swrm.skip < SWR_SAMPLES_SKP)
 		return;
@@ -5940,18 +5978,7 @@ static void UiDriverHandleSWRMeter(void)
 
 	//printf("aver power %d, aver ret %d\n\r", val_p,val_s);
 
-	// Transmitter protection
-	if(val_s > 2000)
-	{
-		// Display
-		UiLcdHy28_PrintText(((POS_SM_IND_X + 18) + 140),(POS_SM_IND_Y + 59),"PROT",Red,Black,4);
-
-		// Disable tx - not used for now
-		//ts.tx_power_factor	= 0.0;
-
-		ts.power_level = PA_LEVEL_0_5W;
-	}
-
+/*
 	if (val_s > val_p)
 	{
 		val_o = 0;
@@ -5961,8 +5988,8 @@ static void UiDriverHandleSWRMeter(void)
 	{
 		val_o  = (val_p - val_s);
 	}
-
-	UiDriverUpdateTopMeterA((uchar)(val_o/120),0);
+*/
+	UiDriverUpdateTopMeterA((uchar)(val_p/120),0);
 /*
 	// Show 1W
 	if((val_o > POWER_1W_MIN) && (val_p < POWER_1W_MAX))
@@ -6008,66 +6035,93 @@ static void UiDriverHandleSWRMeter(void)
 	if(val_o > POWER_10W_MAX)
 		UiDriverUpdateTopMeterA(34,0);
 */
-	if(ts.tx_meter_mode == METER_SWR)	{
-		// Just test
-		//UiDriverUpdateBtmMeter((uchar)(val_s / 250), 0);
+
+	// Just test
+			//UiDriverUpdateBtmMeter((uchar)(val_s / 250), 0);
 
 
-		//for debugging
-		char txt[32];
-		sprintf(txt, "p= %d      ", val_p);
-		UiLcdHy28_PrintText    ((POS_RIT_IND_X + 1), (POS_RIT_IND_Y + 20),txt,White,Grid,0);
+			//for debugging
+			//char txt[32];
+			//sprintf(txt, "p= %d      ", val_p);
+			//UiLcdHy28_PrintText    ((POS_RIT_IND_X + 1), (POS_RIT_IND_Y + 20),txt,White,Grid,0);
 
-		sprintf(txt, "s= %d      ", val_s);
-		UiLcdHy28_PrintText    ((POS_RIT_IND_X + 1), (POS_RIT_IND_Y + 30),txt,White,Grid,0);
-
-
-
-		// From http://ac6v.com/swrmeter.html
-		// Fixed by KC8CDQ
-		//
-
-		if (val_s < 300)
-		{
-			val_s = 300;
-		}
-
-		if (val_p < 300)
-		{
-			val_p = 300;
-		}
-
-		val_s -= 300;	//zero out the meters
-		val_p -= 300;
+			//sprintf(txt, "s= %d      ", val_s);
+			//UiLcdHy28_PrintText    ((POS_RIT_IND_X + 1), (POS_RIT_IND_Y + 30),txt,White,Grid,0);
 
 
-		if (val_p <= 100)	// Do not display swr for low signal levels
-		{
-			swr = 0;
-		}
+
+			// From http://ac6v.com/swrmeter.html
+			// Fixed by KC8CDQ
+			//
+
+	if (val_s < 300) {
+		val_s = 300;
+	}
+
+	if (val_p < 300) {
+		val_p = 300;
+	}
+
+	val_s -= 300;	//zero out the meters
+	val_p -= 300;
+
+
+	if (val_p <= 100) {  // Do not display swr for low signal levels
+		swr = 0;
+	}
 
 		else {
-			//float_t fraction = val_s/(float_t)val_p;
-			//float_t rho = sqrt(fraction);
-			//swr = (1 + rho)/(1 - rho);
-			swr = (float_t(val_p) + float_t(val_s))/(float_t(val_p) - float_t(val_s));
+			float_t fraction = val_s/(float_t)val_p;
+			float_t rho = sqrt(fraction);
+			swr = (1 + rho)/(1 - rho);
+
+				//Another way of calculating swr.
+				//swr = (float_t)val_p + val_s;
+				//swr = swr / ((float_t)val_p - val_s);
 		}
 
-		swr *= 100;
-		val_swr = (ushort)swr;
-		//printf("swr %i\n\r", val_s);
+			swr *= 100;
+			val_swr = (ushort)swr;
+			//printf("swr %i\n\r", val_s);
+
+	if(ts.tx_meter_mode == METER_SWR)	{
+
 
 		// Display SWR
 
-		UiDriverUpdateBtmMeter((uchar)(val_swr/60), 15);
+		UiDriverUpdateBtmMeter((uchar)(val_swr/60), 16);
 
 		// used for debugging
 
 
-				sprintf(txt, "swr= %d      ", val_swr);
-				UiLcdHy28_PrintText    ((POS_RIT_IND_X + 1), (POS_RIT_IND_Y + 40),txt,White,Grid,0);
+				//sprintf(txt, "swr= %d      ", val_swr);
+				//UiLcdHy28_PrintText    ((POS_RIT_IND_X + 1), (POS_RIT_IND_Y + 40),txt,White,Grid,0);
 
 	}
+
+
+	if((swr > 1000) && (!ts.prot)) {
+		ts.prot = 1;
+		UiLcdHy28_PrintText(((POS_SM_IND_X + 18) + 140),(POS_SM_IND_Y + 59),"PROT",Red,Black,4);
+		UiLcdHy28_PrintText(POS_BOTTOM_BAR_F2_X,POS_BOTTOM_BAR_F2_Y," RESET",Red,Black,0);
+
+
+		// Disable tx - not used for now
+		//ts.tx_power_factor	= 0.0;
+
+		ts.power_level_old = ts.power_level;
+		ts.power_level = PA_LEVEL_0_5W;
+
+		UiDriverChangePowerLevel();
+
+		if(ts.tune)		// recalculate sidetone gain only if transmitting/tune mode
+			Codec_SidetoneSetgain();
+			//
+		if(ts.menu_mode)	// are we in menu mode?
+			UiDriverUpdateMenu(0);	// yes, update display when we change power setting
+	}
+
+
 	else if(ts.tx_meter_mode == METER_ALC)	{
 		scale_calc = ads.alc_val;		// get TX ALC value
 		scale_calc *= scale_calc;		// square the value

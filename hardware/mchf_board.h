@@ -45,10 +45,10 @@
 #define 	TRX4M_VER_MAJOR			0
 #define 	TRX4M_VER_MINOR			0
 #define 	TRX4M_VER_RELEASE		219
-#define 	TRX4M_VER_BUILD			2
+#define 	TRX4M_VER_BUILD			3
 //
 #define		ATTRIB_STRING1			"Additional Contributions by"
-#define		ATTRIB_STRING2			"KA7OEI and the Open Source and"
+#define		ATTRIB_STRING2			"KA7OEI;KC8CDQ the Open Source and"
 #define		ATTRIB_STRING3			"Amateur Radio communities"
 //
 // -----------------------------------------------------------------------------
@@ -953,6 +953,7 @@ typedef struct TransceiverState
 	ulong	unmute_delay_count;
 
 	uchar	power_level;
+	uchar	power_level_old;
 
 	uchar 	tx_audio_source;
 	uchar	tx_mic_gain;
@@ -1067,6 +1068,8 @@ typedef struct TransceiverState
 	ulong	hold_off_spectrum_scope;	// this is a timer used to hold off updates of the spectrum scope when an SPI LCD display interface is used
 	ulong	lcd_blanking_time;			// this holds the system time after which the LCD is blanked - if blanking is enabled
 	bool	lcd_blanking_flag;			// if TRUE, the LCD is blanked completely (e.g. backlight is off)
+
+	bool	prot;						// if TRUE high SWR protection is on
 
 } TransceiverState;
 //

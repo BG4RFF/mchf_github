@@ -566,6 +566,7 @@ void TransceiverStateInit(void)
 	ts.pa_cw_bias		= DEFAULT_PA_BIAS;			// Use lowest possible voltage as default (nonzero sets separate bias for CW mode)
 	ts.freq_cal			= 0;							// Initial setting for frequency calibration
 	ts.power_level		= PA_LEVEL_DEFAULT;			// See mchf_board.h for setting
+	ts.power_level_old = ts.power_level;
 	//
 //	ts.codec_vol		= 0;						// Holder for codec volume
 //	ts.codec_mute_state	= 0;						// Holder for codec mute state
@@ -647,6 +648,8 @@ void TransceiverStateInit(void)
 	ts.hold_off_spectrum_scope	= 0;		// this is a timer used to hold off updates of the spectrum scope when an SPI LCD display interface is used
 	ts.lcd_blanking_time = 0;				// this holds the system time after which the LCD is blanked - if blanking is enabled
 	ts.lcd_blanking_flag = 0;				// if TRUE, the LCD is blanked completely (e.g. backlight is off)
+	ts.prot = 0;							// if TRUE high SWR protection is on
+
 
 }
 
